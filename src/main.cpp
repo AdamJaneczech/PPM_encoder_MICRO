@@ -22,8 +22,16 @@ bool isCyclic[NUM_CHANNELS] = {false, false, false, false, false, false};  // Tr
 uint32_t cyclicStartTime[NUM_CHANNELS] = {0, 0, 0, 0, 0, 0};  // Track start time for each cyclic channel
 
 void parseInput(String input) {
+  // Reset all channels to 1500 microseconds if 'R' command is received
+  if (input.startsWith("R") && input.length() < 3) {
+    for (int i = 0; i < NUM_CHANNELS; i++) {
+      channelValues[i] = 1500;
+      isCyclic[i] = false; // Disable cyclic mode for all channels
+    }
+    Serial.println("All channels reset to 1500 microseconds.");
+  }
   // Parse channel setting command 'Cx YYYY'
-  if (input.startsWith("C") && input.length() > 4) {
+  else if (input.startsWith("C") && input.length() > 4) {
     int channel = input.substring(1, 2).toInt() - 1;
     int value = input.substring(3).toInt();
 
@@ -58,7 +66,7 @@ void parseInput(String input) {
       Serial.println("Invalid input. Use format 'Ax YYYY' (x: channel 1-6, YYYY: positive integer).");
     }
   } else {
-    Serial.println("Invalid input format. Use format 'Cx YYYY' or 'Ax YYYY'.");
+    Serial.println("Invalid input format. Use format 'Cx YYYY', 'Ax YYYY', or 'R'.");
   }
 }
 
@@ -92,7 +100,7 @@ void setup() {
 
   // Start serial communication
   Serial.begin(115200);
-  Serial.println("PPM Encoder ready. Use format 'Cx YYYY' to change channel x to value YYYY.");
+  Serial.println("PPM Encoder ready. Use format 'Cx YYYY' to change channel x to value YYYY, 'Ax YYYY' for cyclic motion, or 'R' to reset.");
 
   // Initialize the display
   if (!display.begin(SSD1306_SWITCHCAPVCC, SSD1306_I2C_ADDRESS)) {
