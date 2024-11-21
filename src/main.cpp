@@ -23,6 +23,7 @@ uint32_t cyclicStartTime[NUM_CHANNELS] = {0, 0, 0, 0, 0, 0};  // Track start tim
 
 void parseInput(String input) {
   // Reset all channels to 1500 microseconds if 'R' command is received
+  Serial.println(input);
   if (input.startsWith("R") && input.length() < 3) {
     for (int i = 0; i < NUM_CHANNELS; i++) {
       channelValues[i] = 1500;
@@ -97,9 +98,11 @@ void updateDisplay() {
 void setup() {
   // Start the PPM encoder
   ppmEncoder.begin(PPM_PIN, NUM_CHANNELS);
+  pinMode(12,OUTPUT);
+  digitalWrite(12,HIGH);
 
   // Start serial communication
-  Serial.begin(115200);
+  Serial.begin(38400);
   Serial.println("PPM Encoder ready. Use format 'Cx YYYY' to change channel x to value YYYY, 'Ax YYYY' for cyclic motion, or 'R' to reset.");
 
   // Initialize the display
