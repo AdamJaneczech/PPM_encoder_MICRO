@@ -102,7 +102,7 @@ void setup() {
   digitalWrite(12,HIGH);
 
   // Start serial communication
-  Serial.begin(38400);
+  Serial.begin(115200);
   Serial.println("PPM Encoder ready. Use format 'Cx YYYY' to change channel x to value YYYY, 'Ax YYYY' for cyclic motion, or 'R' to reset.");
 
   // Initialize the display
